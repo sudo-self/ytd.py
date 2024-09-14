@@ -5,7 +5,7 @@ Script
 ```
 git clone https://github.com/sudo-self/ytd.py.git
 cd ytd.py
-python3.py
+python3 ytd.py
 ```
 
 Extract
