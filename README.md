@@ -1,6 +1,6 @@
 ## ytd.py
 
-Run .py
+.py
 
 ```
 git clone https://github.com/sudo-self/ytd.py.git
@@ -8,7 +8,7 @@ cd ytd.py
 python3 ytd.py
 ```
 
-Run app
+app
 
 ```
 git clone https://github.com/sudo-self/ytd.py
