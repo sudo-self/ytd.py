@@ -23,7 +23,7 @@ def create_readme():
     except Exception as e:
         print(f"Failed to create readme.txt: {str(e)}")
 
-# DownloadThread handles video downloading and ringtone creation in separate threads
+
 class DownloadThread(QThread):
     update_signal = pyqtSignal(str)
     download_complete_signal = pyqtSignal()
@@ -45,7 +45,7 @@ class DownloadThread(QThread):
                     video_filename = self.get_video_filename(output_path)
                     if video_filename:
                         self.update_signal.emit(f"Video downloaded: {video_filename}")
-                        create_readme()  # Create the readme.txt after successful download
+                        create_readme()  
                     else:
                         self.update_signal.emit("Error: Video file not found.")
                 else:
@@ -97,13 +97,13 @@ class DownloadThread(QThread):
 
         return None
 
-# MainWindow handles the UI and connects user actions to the appropriate functions
+
 class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
 
         self.setWindowTitle('YT Ringtones')
-        self.setWindowIcon(QIcon('ytd.icns'))  # You can replace this with your own icon
+        self.setWindowIcon(QIcon('icon.icns')) 
         self.setFixedSize(380, 500)
 
         self.url_input = QLineEdit(self)
