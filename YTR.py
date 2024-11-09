@@ -9,7 +9,6 @@ import pyperclip
 
 logging.basicConfig(level=logging.INFO)
 
-
 DOWNLOAD_FOLDER = os.path.expanduser("./Downloads")
 
 def create_readme():
@@ -45,7 +44,7 @@ class DownloadThread(QThread):
                     video_filename = self.get_video_filename(output_path)
                     if video_filename:
                         self.update_signal.emit(f"Video downloaded: {video_filename}")
-                        create_readme()  
+                        create_readme() 
                     else:
                         self.update_signal.emit("Error: Video file not found.")
                 else:
@@ -103,7 +102,7 @@ class MainWindow(QMainWindow):
         super().__init__()
 
         self.setWindowTitle('YT Ringtones')
-        self.setWindowIcon(QIcon('icon.icns')) 
+        self.setWindowIcon(QIcon('ytd.icns'))
         self.setFixedSize(380, 500)
 
         self.url_input = QLineEdit(self)
@@ -124,6 +123,9 @@ class MainWindow(QMainWindow):
         self.open_folder_button = QPushButton('Open Downloads Folder', self)
         self.open_folder_button.clicked.connect(self.open_folder)
 
+        self.push_to_device_button = QPushButton('Push to Device Android', self)
+        self.push_to_device_button.clicked.connect(self.push_to_device)
+        
         self.paste_button = QPushButton('Paste URL from Clipboard', self)
         self.paste_button.clicked.connect(self.paste_from_clipboard)
 
@@ -149,6 +151,7 @@ class MainWindow(QMainWindow):
         main_layout.addWidget(self.android_button)
         main_layout.addWidget(self.iphone_button)
         main_layout.addWidget(self.open_folder_button)
+        main_layout.addWidget(self.push_to_device_button)
         main_layout.addWidget(self.paste_button)
         main_layout.addWidget(self.clear_button)
         main_layout.addWidget(self.status_text)
@@ -168,6 +171,20 @@ class MainWindow(QMainWindow):
         main_layout.addWidget(footer_widget)
 
         self.setCentralWidget(container)
+    
+    def push_to_device(self):
+        """Push the Android ringtone .mp3 to the device using adb"""
+        try:
+            adb_command = ['adb', 'push', os.path.join(DOWNLOAD_FOLDER, 'AndroidRingtone.mp3'), '/sdcard/']
+            process = subprocess.Popen(adb_command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            stdout, stderr = process.communicate()
+
+            if process.returncode == 0:
+                self.status_text.append("Successfully pushed AndroidRingtone.mp3 to the device.")
+            else:
+                self.status_text.append(f"Error pushing to device: {stderr.decode()}")
+        except Exception as e:
+            self.status_text.append(f"Failed to push file to device: {str(e)}")
 
     def download_video(self):
         url = self.url_input.text()
@@ -210,32 +227,25 @@ class MainWindow(QMainWindow):
             if sys.platform == 'win32':
                 os.startfile(DOWNLOAD_FOLDER)
             elif sys.platform == 'darwin':
-                subprocess.Popen(['open', DOWNLOAD_FOLDER])
+                subprocess.call(['open', DOWNLOAD_FOLDER])
             else:
-                subprocess.Popen(['xdg-open', DOWNLOAD_FOLDER])
+                subprocess.call(['xdg-open', DOWNLOAD_FOLDER])
         except Exception as e:
-            self.status_text.append(f"Failed to open folder: {str(e)}")
+            self.status_text.append(f"Failed to open downloads folder: {str(e)}")
 
     def paste_from_clipboard(self):
-        try:
-            clipboard_text = pyperclip.paste()
-            if clipboard_text:
-                self.url_input.setText(clipboard_text)
-                self.status_text.append('Added URL from clipboard')
-            else:
-                self.status_text.append('Clipboard is empty or inaccessible')
-        except Exception as e:
-            self.status_text.append(f'Error: {e}')
-    
+        url = pyperclip.paste()
+        self.url_input.setText(url)
+
     def clear_input(self):
         self.url_input.clear()
-        self.status_text.append('Cleared input field')
+        self.status_text.clear()
 
-if __name__ == '__main__':
-    app = QApplication(sys.argv)
-    window = MainWindow()
-    window.show()
-    sys.exit(app.exec_())
+
+app = QApplication(sys.argv)
+window = MainWindow()
+window.show()
+sys.exit(app.exec_())
 
 
 
