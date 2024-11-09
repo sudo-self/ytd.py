@@ -19,8 +19,8 @@ python3 ytr.py
 - App
 
 ```
-git clone https://github.com/sudo-self/ytd.py
-cd ytd.py
+git clone https://github.com/sudo-self/ytr.py
+cd ytr.py
 tar -xzvf ytr.tar.gz
 ./YTR
 ```
