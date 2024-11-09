@@ -23,6 +23,7 @@ git clone https://github.com/sudo-self/ytr.py
 cd ytr.py
 tar -xzvf ytr.tar.gz
 ./YTR
+./YTR
 ```
 
 
